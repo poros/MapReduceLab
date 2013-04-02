@@ -5,6 +5,8 @@ Solutions of the Hadoop Map Reduce Lab for the course of Distributed Systems And
 
 # MapReduce Laboratory
 
+https://github.com/michiard/CLOUDS-LAB/wiki/MapReduce-Lab
+
 In this laboratory students will learn how to use the [hadoop][hadoop] client API by working on a series of exercises: 
 
 + The classic Word Count and variations on the theme
@@ -17,6 +19,7 @@ Note that the two design patterns outlined above have been originally discussed 
 + Jimmy Lin, Chris Dyer, **Data-Intensive Text Processing with MapReduce**, Morgan Claypool ed.  
 
 The following [Link][cheatsheet] contains a "cheat-sheet" to help students with common commands on Hadoop.
+
 
 [cheatsheet]: https://github.com/michiard/CLOUDS-LAB/blob/master/C-S.md "Cheatsheet"
 [hadoop]: http://hadoop.apache.org "hadoop"
