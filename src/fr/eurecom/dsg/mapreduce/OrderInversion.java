@@ -168,9 +168,9 @@ public class OrderInversion extends Configured implements Tool {
 			
 			if (key.getSecond().toString().equals(ASTERISK)) {
 				sum = absolute;
-				relative.set(sum);
+				relative.set((double) sum);
 			} else {
-				relative.set((double) (absolute / sum));
+				relative.set((double) absolute / sum);
 			}
 			
 			context.write(key, relative);
