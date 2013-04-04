@@ -60,32 +60,6 @@ public class OrderInversion extends Configured implements Tool {
 		InterruptedException {
 			map = new HashMap<TextPair, Integer>();
 		}
-
-		/*
-		@Override
-		public void map(LongWritable key, Text value, Context context)
-				throws java.io.IOException, InterruptedException {
-			StringTokenizer iter = new StringTokenizer(value.toString());
-			if (iter.hasMoreTokens()) {
-				String left =iter.nextToken();
-				while (iter.hasMoreTokens()) {
-					String right = iter.nextToken();
-					TextPair pair = new TextPair (left, right);
-					pair.getSecond().set(ASTERISK);
-					if (map.containsKey(pair))
-						map.put(pair, map.get(pair)+1);
-					else
-						map.put(pair, 1);
-					pair = new TextPair (left, right);
-					if (map.containsKey(pair))
-						map.put(pair, map.get(pair)+1);
-					else
-						map.put(pair, 1);
-					left = right;
-				}
-			}
-		}
-		*/
 		
 		@Override
 		public void map(LongWritable key, Text value, Context context)
@@ -130,31 +104,7 @@ public class OrderInversion extends Configured implements Tool {
 	Reducer<TextPair, IntWritable, TextPair, DoubleWritable> {
 
 		private DoubleWritable relative = new DoubleWritable();
-		//private String left = new String();
 		private int sum = 0;
-		
-		// TODO: implement reducer
-		/*
-		@Override
-		public void reduce(TextPair key, // TODO: change Object to input key type
-				Iterable<IntWritable> values, // TODO: change Object to input value type 
-				Context context) throws IOException, InterruptedException {				
-			if (key.getSecond().toString().equals(ASTERISK)) {
-				if (!left.equals(key.getFirst().toString())) {
-					sum = 0;
-					left = key.getFirst().toString();
-				}
-				for (IntWritable cnt:values) sum+=cnt.get();
-				freq.set((double)sum);
-				context.write(key,freq);
-				return;
-			}
-			int absolute = 0;
-			for (IntWritable cnt:values) absolute+=cnt.get();
-			freq.set((double)absolute/sum);
-			context.write(key, freq);
-		}
-		*/
 		
 		@Override
 		public void reduce(TextPair key, // TODO: change Object to input key type
