@@ -60,7 +60,7 @@ public class Stripes extends Configured implements Tool {
 		// TODO: set the output path for the job results (to HDFS) to the variable
 		//       outputPath
 		FileOutputFormat.setOutputPath(job, outputDir);
-		
+
 		// TODO: set the number of reducers using variable numberReducers
 		job.setNumReduceTasks(numReducers);
 
@@ -92,62 +92,42 @@ class StripesMapper
 				Text,   // TODO: change Object to output key type
 				StringToIntAssociativeArray> { // TODO: change Object to output value type
 
-	//private StringToIntAssociativeArray stripe = new StringToIntAssociativeArray();
-	private Map<String, StringToIntAssociativeArray> stripes = new HashMap<String, StringToIntAssociativeArray>();
 	private Text word = new Text();
-	
-	/*
+
 	@Override
 	public void map(LongWritable key, // TODO: change Object to input key type
 			Text value, // TODO: change Object to input value type
 			Context context)
 					throws java.io.IOException, InterruptedException {
 		
+		Map<String, StringToIntAssociativeArray> stripes = new HashMap<String, StringToIntAssociativeArray>();
+
 		StringTokenizer iter = new StringTokenizer(value.toString());
 		if (iter.hasMoreTokens()) {
 			String left = iter.nextToken();
 			while (iter.hasMoreTokens()) {
 				String right = iter.nextToken();
-				stripe.set(right, 1);
-				word.set(left);
-				context.write(word, stripe);
-				stripe.clear();
-				left = right;
-			}
-		}    
-	}
-	*/
-	
-	@Override
-	public void map(LongWritable key, // TODO: change Object to input key type
-			Text value, // TODO: change Object to input value type
-			Context context)
-					throws java.io.IOException, InterruptedException {
-		
-		StringTokenizer iter = new StringTokenizer(value.toString());
-		if (iter.hasMoreTokens()) {
-			String left = iter.nextToken();
-			while (iter.hasMoreTokens()) {
-				String right = iter.nextToken();
-				
+
 				StringToIntAssociativeArray s;
 				if ((s = stripes.get(left)) != null) {
 					Integer val;
+					
 					if ((val = s.get(right)) != null) {
 						s.set(right, val + 1);
 					} else {
 						s.set(right, 1);
 					}
+					
 				} else {
 					s = new StringToIntAssociativeArray();
 					s.set(right, 1);
 				}
 				stripes.put(left, s);
-				
+
 				left = right;
 			}
 		}
-		
+
 		for (Entry<String, StringToIntAssociativeArray> pair : stripes.entrySet()) {
 			word.set(pair.getKey());
 			context.write(word, pair.getValue());
@@ -167,7 +147,7 @@ class StripesReducer
 	public void reduce(Text key, // TODO: change Object to input key type
 			Iterable<StringToIntAssociativeArray> values, // TODO: change Object to input value type 
 			Context context) throws IOException, InterruptedException {
-		
+
 		for (StringToIntAssociativeArray stripe : values) 	
 			for (Entry<String,Integer> pair : stripe.entrySet()) {
 				Integer val;
