@@ -3,9 +3,13 @@ MapReduceLab
 
 Solutions of the Hadoop Map Reduce Lab for the course of Distributed Systems And Cloud Computing
 
-# MapReduce Laboratory
+Our answers to the questions addressed in this document are available at https://github.com/poros/MapReduceLab/mapreduce-lab/Answers.md
+
+Below the main wiki page of the laboratory as it was in the repository of the course. 
 
 https://github.com/michiard/CLOUDS-LAB/wiki/MapReduce-Lab
+
+# MapReduce Laboratory
 
 In this laboratory students will learn how to use the [hadoop][hadoop] client API by working on a series of exercises: 
 
