@@ -5,7 +5,7 @@ Solutions of the Hadoop Map Reduce Lab for the course of Distributed Systems And
 
 Our answers to the questions addressed in this document are available at
 
-https://github.com/poros/MapReduceLab/mapreduce-lab/Answers.md
+https://github.com/poros/MapReduceLab/blob/master/mapreduce-lab/Answers.md
 
 Below the main wiki page of the laboratory as it was in the repository of the course. 
 
