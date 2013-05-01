@@ -4,21 +4,21 @@ Ex 01 :: Word Count
 1.  Compare between Pig and Hadoop, including their pros and cons
   Pig is built on the top of Hadoop and it gives a more abstracted view on the algorithms implementation. The major advantage of Pig is that even complex algorithms can be simply implemented thanks to very expressive operators.
   Pig pros:
-    - Simple language and debugging environment.
-    - Customizable UDF.
-    - Schema flexibility and low cost data curation (Pig eats anything!). 
-    - Support for join.
+    - Simple language and debugging environment
+    - Customizable UDF
+    - Schema flexibility and low cost data curation (Pig eats anything!) 
+    - Support for join
   Pig cons:
-    - Overhead while compiling Pig Latin into map-reduce jobs.
+    - Overhead while mapping Pig Latin into map-reduce jobs
   MapReduce pros:
-    - High customizable.
-    - Java programming language.
-    - Usually more efficient.
+    - High customizable
+    - Java programming language
+    - Usually more efficient
   MapReduce cons:
     - Rigid data-flow.
-    - Strict model: one input, two stages, two operators.
-    - Code is difficult to reuse and maintain even for basic operations.
-    - Difficult algorithms design.
+    - Strict model: one input, two stages, two operators
+    - Code is difficult to reuse and maintain even for basic operations
+    - Difficult algorithms design
 
 2.  What does a GROUP BY command do? At which phase of MapReduce is GROUP BY performed in this exercise and in general?
   PigLatin reference manual: "The GROUP BY operator groups together tuples that have the same group key. The result of a GROUP operation is a relation that includes one tuple per group." 
@@ -51,13 +51,12 @@ Ex 02 :: Working with Online Social Networks data
 
   3. Related to job performance, what kinds of optimization does Pig provide in this exercise? Are they useful? Can we disable them? Should we?
 
-  Pig used the default optimizations: combiner and multi-query optimization. A combiner is used in the GROUP BY + FOREACH job (if interleaved operations or nested foreach are not present) and the multi-query execution parse and optimize the whole script at once in order to combine intermediate tasks (for example the bad_dataset is never actually stored on the disk because it is not reused in any further operation).
+  Pig used the default optimizations: combiner and multi-query optimization. A combiner is used in the GROUP BY + FOREACH job (if interleaved operations or nested foreach are not present) and the multi-query execution parse and optimize the whole script at once in order to combine intermediate tasks and to optimize storage operations (for example the bad_dataset is never actually stored on the disk because it is not reused in any further operation).
 
   An additional optimization is called "parallelism", in other words the number of reducers that are instantiated for a job.
   The Pig framework estimates one reducer per Gigabyte, but it also possible to manually define it. 
     
   We can disable the multi-query execution doing: pig -no_multiquery myscript.pig, while we can not find any way to disable the combiner. However, they are usually very useful (as in this case), so they should be kept active.
-
 
   4. What should we do when the input has some noises? for example: some lines in the dataset only contain USER_ID but the FOLLOWER_ID is unavailable or null
 
@@ -68,17 +67,17 @@ Ex 02 :: Working with Online Social Networks data
   -----------------------------------------------------------------
     
   1.  What is the size of the input data? In your opinion, is it considered Big Data? Why? How long does the job run? What is your comment here?
-    Being the size of the input in the order of the MBs, we can not consider it Big Data (we expect data to be at least of the order of GBs).
-    However, being a join involved in the algorithm, the intermediate results size can greatly increase. In fact, with 40 reducers, our job lasted circa 7 minutes. This result seems reasonable, having the script performed a join.
+    Being the size of the input in the order of the MBs (20.8 MB), we can not consider it Big Data (we expect data to be at least of the order of GBs).
+    However, being a join involved in the algorithm, the intermediate results size can greatly increase. In fact, with 40 reducers, our job lasted circa 7 minutes. This result seems reasonable, having the script actually performed a join.
 
   2.  Try the parallelism with different numbers. Observe the behavior of reducers. What can you say about the load balancing between reducers?
 
-    We tried to execute the pig script one time with 20 reducers and the second one with 40 reducers. We noticed that the load was not uniformly distributed among all the reducers, in fact the time delay between the fastest and the slowest reducer is circa 1 minute (on 2:40 minutes in average). However the execution with 40 reducer was a little faster but not enough to justify a double number of reducers.
+    We tried to execute the pig script one time with 20 reducers and the second one with 40 reducers. We noticed that the load was not uniformly distributed among all the reducers, in fact the time delay between the fastest and the slowest reducer is circa 1 minute (on 2:40 minutes in average). However the execution with 40 reducer was a little faster (circa 1 minute) but not enough to justify a double number of reducers.
 
   3.  Explain briefly how Pig JOIN works in your opinion.
 
     Pig gives the possibility to perform two type of join: the general join and the fragment replicate join. 
-     - The general join is used for relations having about the same size. We suppose that Pig implements a reduce-side join in similar way we did in the MapReduce laboratory for the join exercise.
+     - The general join is used for relations having about the same size. We suppose that Pig implements a reduce-side join in similar way we did in the MapReduce laboratory for the join exercise (please see the Mapreduce Lab answers for details).
      - The fragment replicated join is used if one of the relations is small enough to fit in memory (the clause USING 'replicated' need to be used). In this case Pig performs a map-side join using an in-memory lookup table. We suppose that this solution is really similar to the Distributed Cache join done in the MapReduce lab.
     
   4.  Have you verified your results? Does your result contain duplicate tuple? Or any tuple that points from one user to him again? What operations do you use to solve these two problems?
@@ -107,7 +106,8 @@ Exercise 3:: Working with Network Data
   
   Starting from the two scripts provided, we figured out how to implement a Pig equivalent of the extended SQL roll-up operation (it is composed by three chained jobs).
   We have already showed the solution to the Pig laboratory assistant and he seemed quite impressed, so we supposed that is OK :)
-  However, to improve the two scripts provided, we thought about:
+
+  However, even if our solution is really different from the two ones proposed, we also thought to three optimizations for the two scripts provided. These otpimizations can be implemented without using our roll-up:
   - Joining USING 'replicated' if the tables involved in the joins are supposed to be small enough to fit in memory. This feature implements a map side join thanks to the distributed cache system (as we saw in Ex 05 of the MapReduce Lab).
   - Setting the number of the reducers using PARALLEL.
   - We noticed that the three jobs (hour, day and week) are independent from each other in the way that are actually implemented in the solutions provided. Therefore, we suppose that, having previously generated the hour, day and week values from the original file, the three jobs may be executed in parallel, instead of one after the other.
